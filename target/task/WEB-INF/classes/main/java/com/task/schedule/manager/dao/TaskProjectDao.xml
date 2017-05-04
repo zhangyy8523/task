@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.task.schedule.manager.dao.TaskProjectDao">
+
+	<insert id="save" parameterType="taskProject" useGeneratedKeys="true" keyProperty="id" flushCache="true">
+		 insert into task_project(name,remark,isrecemail,recemail,addtime,adduser,sign,signstring)
+		 values(#{name},#{remark},#{isrecemail},#{recemail},now(),#{adduser},#{sign},#{signstring})
+	</insert>
+	
+	<delete id="delete" flushCache="true">
+		delete from task_project
+		<where>id=#{id}</where>
+	</delete>
+	
+	<update id="update" parameterType="taskProject" flushCache="true">
+		update task_project
+		<set>
+			name=#{name}
+			,remark=#{remark}
+			,isrecemail=#{isrecemail}
+			,recemail=#{recemail}
+			,sign=#{sign}
+			,signstring=#{signstring}
+		</set>
+		<where>id=#{id}</where>
+	</update>
+	
+	<select id="get" resultType="taskProject">
+		select * from task_project
+  		<where>id=#{id}</where>
+	</select>
+	
+	<select id="findTaskProject" parameterType="taskProject" resultType="taskProject">
+		select * from task_project
+		<where>
+			<if test="name!=null and name!=''">and name like concat(concat('%', #{name}), '%')</if>
+		</where>
+		order by id desc
+  		limit #{currentIndex}, #{size}
+	</select>
+	<select id="findTaskProjectCount" parameterType="taskProject" resultType="int">
+		select count(*) from task_project
+		<where>
+			<if test="name!=null and name!=''">and name like concat(concat('%', #{name}), '%')</if>
+		</where>
+	</select>
+</mapper>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.task.schedule.manager.dao.TaskJobDao">
+
+	<insert id="save" parameterType="taskJob" useGeneratedKeys="true" keyProperty="id" flushCache="true">
+		 insert into task_job(projectid,name,remark,link,cron,isfailmail,addtime,adduser,status,statusmsg,servid,updatetime)
+		 values(#{projectid},#{name},#{remark},#{link},#{cron},#{isfailmail},now(),#{adduser},#{status},#{statusmsg},#{servid},now())
+	</insert>
+	
+	<delete id="delete" flushCache="true">
+		delete from task_job
+		<where>id=#{id}</where>
+	</delete>
+	
+	<update id="update" parameterType="taskJob" flushCache="true">
+		update task_job
+		<set>
+			name=#{name}
+			,remark=#{remark}
+			,link=#{link}
+			,cron=#{cron}
+			,isfailmail=#{isfailmail}
+			,status=#{status},
+			servid=#{servid}
+		</set>
+		<where>id=#{id}</where>
+	</update>
+	<update id="updateWait" flushCache="true">
+		update task_job
+		<set>status=#{waitStatus}</set>
+		<where>
+			status!=#{stopStatus} and updatetime&lt;date_add(now(), interval -#{destroyTime} second)
+		</where>
+	</update>
+	<update id="updateStatus" flushCache="true">
+		update task_job
+		<set>status=#{status}</set>
+		<where>id=#{id}</where>
+	</update>
+	<update id="updateRelease" flushCache="true">
+		update task_job
+		<set>status=#{status},servid=null</set>
+		<where>id=#{id}</where>
+	</update>
+	<update id="updateByServid" flushCache="true">
+		update task_job
+		<set>servid=#{servid},updatetime=now()</set>
+		<where>
+			status=#{status}
+		</where>
+		limit #{topnum}
+	</update>
+	<update id="updateUpdatetimeByServidStatus" flushCache="true">
+		update task_job
+		<set>updatetime=now()</set>
+		<where>
+			servid=#{servid} and status=#{status}
+		</where>
+	</update>
+	
+	<select id="get" resultType="taskJob">
+		select * from task_job
+  		<where>id=#{id}</where>
+	</select>
+	<select id="findServidCountByStatus" resultType="hashMap">
+		select servid,count(status) total from task_job
+		<where>status=#{status}</where>
+		group by servid
+	</select>
+	<select id="findProjectidCount" resultType="hashMap">
+		select projectid,status,count(status) total from task_job
+		group by projectid,status
+	</select>
+	
+	<select id="findByStatus" resultType="taskJob">
+		select * from task_job
+  		<where>status=#{status}</where>
+  		<if test="topnum != null">limit #{topnum}</if>
+	</select>
+	<select id="findByProjectid" resultType="taskJob">
+		select * from task_job
+  		<where>projectid=#{projectid}</where>
+	</select>
+	<select id="findByServidStatus" resultType="taskJob">
+		select * from task_job
+  		<where>servid=#{servid} and status=#{status}</where>
+	</select>
+	<select id="findActive" resultType="taskJob">
+		select * from task_job
+  		<where>status in(#{normalStatus},#{waitStatus})</where>
+	</select>
+	
+	<select id="findTaskJob" parameterType="taskJob" resultType="taskJob">
+		select * from task_job
+		<where>
+			<if test="projectid!=null">and projectid=#{projectid}</if>
+			<if test="servid!=null and servid!=''">and servid=#{servid}</if>
+			<if test="name!=null and name!=''">and name like concat(concat('%', #{name}), '%')</if>
+		</where>
+		order by id desc
+  		limit #{currentIndex}, #{size}
+	</select>
+	<select id="findTaskJobCount" parameterType="taskJob" resultType="int">
+		select count(*) from task_job
+		<where>
+			<if test="projectid!=null">and projectid=#{projectid}</if>
+			<if test="servid!=null and servid!=''">and servid=#{servid}</if>
+			<if test="name!=null and name!=''">and name like concat(concat('%', #{name}), '%')</if>
+		</where>
+	</select>
+</mapper>

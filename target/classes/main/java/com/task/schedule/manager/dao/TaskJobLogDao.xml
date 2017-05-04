@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.task.schedule.manager.dao.TaskJobLogDao">
+
+	<insert id="save" parameterType="taskJobLog" useGeneratedKeys="true" keyProperty="id" flushCache="true">
+		 insert into task_job_log(jobid,addtime,status,link,result,servicecode)
+		 values(#{jobid},now(),#{status},#{link},#{result},#{servicecode})
+	</insert>
+	
+	<delete id="deleteLtDate" flushCache="true">
+		delete from task_job_log
+		<where>addtime&lt;#{date}</where>
+	</delete>
+	
+	<select id="get" resultType="taskJobLog">
+		select * from task_job_log
+  		<where>id=#{id}</where>
+	</select>
+	
+	<select id="findTaskJobLog" parameterType="taskJobLog" resultType="taskJobLog">
+		select * from task_job_log
+		<where>
+			<if test="jobid!=null">and jobid=#{jobid}</if>
+			<if test="status!=null">and status=#{status}</if>
+		</where>
+		order by addtime desc
+  		limit #{currentIndex}, #{size}
+	</select>
+	<select id="findTaskJobLogCount" parameterType="taskJobLog" resultType="int">
+		select count(*) from task_job_log
+		<where>
+			<if test="jobid!=null">and jobid=#{jobid}</if>
+			<if test="status!=null">and status=#{status}</if>
+		</where>
+	</select>
+</mapper>

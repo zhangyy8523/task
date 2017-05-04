@@ -1,0 +1,11 @@
+body{padding-top: 70px;font-family: "微软雅黑", Helvetica, Arial, sans-serif;background: #f1f1f1;}
+h4,h5,h6{font-family: "微软雅黑", Helvetica, Arial, sans-serif;}
+
+.tip_body{padding: 0px;background-color: #ffffff;}
+.cld_body{padding: 10px 10px 0px 10px;background: transparent;}
+
+.container{width: 1000px;}
+.container .c-left{width: 180px;float: left;margin-top: 10px;}
+.container .c-left>div{width: 100%;}
+.container .c-left>div button{width: 100%;}
+.container .c-right{width: 770px;float: right;margin-top: 10px;}

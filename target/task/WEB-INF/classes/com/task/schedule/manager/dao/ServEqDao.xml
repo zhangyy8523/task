@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.task.schedule.manager.dao.ServEqDao">
+
+	<insert id="save" parameterType="servEq" useGeneratedKeys="true" keyProperty="id" flushCache="true">
+		 insert into serv_eq(servid,jobid,status,addtime,destroytime)
+		 values(#{servid},#{jobid},#{status},now(),#{destroytime})
+	</insert>
+	
+	<delete id="deleteDestroyLtDate" flushCache="true">
+		delete from serv_eq
+		<where>addtime&lt;#{date}</where>
+	</delete>
+	
+	<update id="updateStatus" flushCache="true">
+		update serv_eq
+		<set>status=#{status}</set>
+		<where>id=#{id}</where>
+	</update>
+	
+	<select id="findByServid" resultType="servEq">
+		select * from serv_eq
+		<where>
+			servid=#{servid} and status=#{status}
+		</where>
+	</select>
+</mapper>

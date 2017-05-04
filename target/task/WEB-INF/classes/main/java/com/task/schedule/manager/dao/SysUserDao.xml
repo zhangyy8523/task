@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.task.schedule.manager.dao.SysUserDao">
+
+	<insert id="save" parameterType="sysUser" useGeneratedKeys="true" keyProperty="id" flushCache="true">
+		 insert into sys_user(username,password,nickname,addtime,adduser,status)
+		 values(#{username},#{password},#{nickname},now(),#{adduser},#{status})
+	</insert>
+	
+	<delete id="delete" flushCache="true">
+		delete from sys_user
+		<where>id=#{id}</where>
+	</delete>
+	
+	<update id="update" parameterType="sysUser" flushCache="true">
+		update sys_user
+		<set>
+			username=#{username}
+			<if test="password!=null and password!=''">,password=#{password}</if>
+			<if test="nickname!=null and nickname!=''">,nickname=#{nickname}</if>
+			<if test="status!=null and status!=''">,status=#{status}</if>
+		</set>
+		<where>id=#{id}</where>
+	</update>
+	<update id="updatePassword" flushCache="true">
+		update sys_user
+		<set>password=#{password}</set>
+		<where>id=#{id}</where>
+	</update>
+	
+	<select id="get" resultType="sysUser">
+		select * from sys_user
+  		<where>id=#{id}</where>
+	</select>
+	<select id="getByUsername" resultType="sysUser">
+		select * from sys_user
+  		<where>username=#{username}</where>
+	</select>
+	
+	<select id="findSysUser" parameterType="sysUser" resultType="sysUser">
+		select * from sys_user
+		<where>
+		</where>
+		order by id desc
+  		limit #{currentIndex}, #{size}
+	</select>
+	<select id="findSysUserCount" parameterType="sysUser" resultType="int">
+		select count(*) from sys_user
+		<where>
+		</where>
+	</select>
+</mapper>

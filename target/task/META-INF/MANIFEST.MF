@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Implementation-Version: 1.0.0
+Built-By: zhangyy
+Implementation-Vendor-Id: task.schedule
+Created-By: IntelliJ IDEA
+Build-Jdk: 1.7.0_02
+Specification-Version: 1.0.0
+

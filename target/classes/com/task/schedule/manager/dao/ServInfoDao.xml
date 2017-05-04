@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.task.schedule.manager.dao.ServInfoDao">
+
+	<insert id="save" parameterType="servInfo" flushCache="true">
+		 insert into serv_info(servid,ip,updatetime,addtime,status,isleader)
+		 values(#{servid},#{ip},now(),now(),#{status},#{isleader})
+	</insert>
+	
+	<delete id="delete" flushCache="true">
+		delete from serv_info
+  		<where>servid=#{servid}</where>
+	</delete>
+	<delete id="deleteDestroyLtDate" flushCache="true">
+		delete from serv_info
+		<where>addtime&lt;#{date} and status=#{destroyStatus}</where>
+	</delete>
+	
+	<update id="updateUpdatetimeStatusByServid" flushCache="true">
+		update serv_info
+		<set>status=#{status},updatetime=now()</set>
+  		<where>servid=#{servid}</where>
+	</update>
+	<update id="updateDestroy" flushCache="true">
+		update serv_info
+		<set>status=#{destroyStatus}</set>
+  		<where>
+  			updatetime&lt;date_add(now(), interval -#{destroyTime} second)
+  		</where>
+	</update>
+	<update id="updateIsleaderByStatus" flushCache="true">
+		update serv_info
+		<set>isleader=#{isleader}</set>
+		<where>
+			status=#{status}
+		</where>
+	</update>
+	<update id="updateChooseLeader" flushCache="true">
+		update serv_info
+		<set>isleader=#{isleader}</set>
+		<where>
+			status=#{status}
+		</where>
+		order by addtime desc
+		limit 1
+	</update>
+	
+	<select id="get" resultType="servInfo">
+		select * from serv_info
+  		<where>servid=#{servid}</where>
+	</select>
+	<select id="getByStatusIsleader" resultType="servInfo">
+		select * from serv_info
+  		<where>status=#{status} and isleader=#{isleader}</where>
+  		order by updatetime desc
+  		limit 1
+	</select>
+	
+	<select id="findByStatus" resultType="servInfo">
+		select * from serv_info
+  		<where>status=#{status}</where>
+  		order by updatetime desc
+	</select>
+	
+	<select id="findServInfo" parameterType="servInfo" resultType="servInfo">
+		select * from serv_info
+		<where>
+		</where>
+		order by updatetime desc
+  		limit #{currentIndex}, #{size}
+	</select>
+	<select id="findServInfoCount" parameterType="servInfo" resultType="int">
+		select count(*) from serv_info
+		<where>
+		</where>
+	</select>
+</mapper>

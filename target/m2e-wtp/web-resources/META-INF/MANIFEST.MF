@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Implementation-Title: task
+Implementation-Version: 1.0.0
+Built-By: zhangyy
+Specification-Title: task
+Implementation-Vendor-Id: task.schedule
+Build-Jdk: 1.8.0_101
+Specification-Version: 1.0.0
+Created-By: Maven Integration for Eclipse
+
